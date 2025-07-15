@@ -3,8 +3,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Globe, FileText, Languages } from "lucide-react";
+import { Loader2, Globe, FileText, Languages, Sparkles } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const Index = () => {
   const [url, setUrl] = useState("");
@@ -78,26 +79,31 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 transition-colors duration-500">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-6">
-            <Globe className="w-8 h-8 text-white" />
+        <div className="flex justify-between items-start mb-12">
+          <div className="text-center flex-1 animate-fade-in">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary to-primary/80 rounded-full mb-6 transform transition-all duration-500 hover:scale-110 hover:rotate-12 shadow-lg">
+              <Globe className="w-8 h-8 text-primary-foreground" />
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent mb-4 animate-slide-up">
+              Blog Summarizer & Translator
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto animate-slide-up [animation-delay:0.2s]">
+              Enter any blog URL to get an AI-powered summary and Urdu translation instantly
+            </p>
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            Blog Summarizer & Translator
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Enter any blog URL to get an AI-powered summary and Urdu translation instantly
-          </p>
+          <div className="animate-fade-in [animation-delay:0.4s]">
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* URL Input Form */}
-        <Card className="max-w-2xl mx-auto mb-8 shadow-lg border-0 bg-white/70 backdrop-blur-sm">
+        <Card className="max-w-2xl mx-auto mb-8 shadow-lg border bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl animate-slide-up [animation-delay:0.3s]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
+              <FileText className="w-5 h-5 text-primary" />
               Enter Blog URL
             </CardTitle>
           </CardHeader>
@@ -108,14 +114,14 @@ const Index = () => {
                 placeholder="https://example.com/blog-post"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="text-lg py-6"
+                className="text-lg py-6 transition-all duration-300 focus:scale-[1.02] focus:shadow-md"
                 disabled={isLoading}
               />
               <div className="flex gap-3">
                 <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-6 text-lg"
+                  className="flex-1 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground py-6 text-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group"
                 >
                   {isLoading ? (
                     <>
@@ -123,7 +129,10 @@ const Index = () => {
                       Processing...
                     </>
                   ) : (
-                    "Summarize & Translate"
+                    <>
+                      <Sparkles className="w-5 h-5 mr-2 transition-transform group-hover:rotate-12" />
+                      Summarize & Translate
+                    </>
                   )}
                 </Button>
                 {(summary || urduTranslation) && (
@@ -131,7 +140,7 @@ const Index = () => {
                     type="button" 
                     variant="outline"
                     onClick={clearResults}
-                    className="py-6"
+                    className="py-6 transition-all duration-300 hover:scale-105"
                   >
                     Clear
                   </Button>
@@ -143,18 +152,18 @@ const Index = () => {
 
         {/* Results */}
         {(summary || urduTranslation) && (
-          <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto animate-fade-in">
             {/* AI Summary */}
-            <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">
+            <Card className="shadow-lg border bg-card/50 backdrop-blur-sm transition-all duration-500 hover:shadow-xl hover:scale-[1.02] animate-slide-up [animation-delay:0.1s]">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-blue-600">
+                <CardTitle className="flex items-center gap-2 text-primary">
                   <FileText className="w-5 h-5" />
                   AI Summary
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-gray max-w-none">
-                  <p className="text-gray-700 leading-relaxed text-lg">
+                <div className="prose prose-gray dark:prose-invert max-w-none">
+                  <p className="text-foreground leading-relaxed text-lg transition-colors duration-300">
                     {summary}
                   </p>
                 </div>
@@ -162,16 +171,16 @@ const Index = () => {
             </Card>
 
             {/* Urdu Translation */}
-            <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">
+            <Card className="shadow-lg border bg-card/50 backdrop-blur-sm transition-all duration-500 hover:shadow-xl hover:scale-[1.02] animate-slide-up [animation-delay:0.2s]">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-purple-600">
+                <CardTitle className="flex items-center gap-2 text-primary">
                   <Languages className="w-5 h-5" />
                   Urdu Translation
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-gray max-w-none">
-                  <p className="text-gray-700 leading-relaxed text-lg text-right font-['Noto_Nastaliq_Urdu']">
+                <div className="prose prose-gray dark:prose-invert max-w-none">
+                  <p className="text-foreground leading-relaxed text-lg text-right font-urdu transition-colors duration-300">
                     {urduTranslation}
                   </p>
                 </div>
@@ -182,14 +191,14 @@ const Index = () => {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto animate-fade-in">
             <div className="grid md:grid-cols-2 gap-8">
               {[1, 2].map((i) => (
-                <Card key={i} className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">
+                <Card key={i} className="shadow-lg border bg-card/50 backdrop-blur-sm animate-pulse">
                   <CardHeader>
                     <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 bg-gray-300 rounded animate-pulse"></div>
-                      <div className="w-32 h-6 bg-gray-300 rounded animate-pulse"></div>
+                      <div className="w-5 h-5 bg-muted rounded animate-pulse"></div>
+                      <div className="w-32 h-6 bg-muted rounded animate-pulse"></div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -197,7 +206,7 @@ const Index = () => {
                       {[1, 2, 3, 4].map((line) => (
                         <div 
                           key={line} 
-                          className="h-4 bg-gray-300 rounded animate-pulse"
+                          className="h-4 bg-muted rounded animate-pulse"
                           style={{ width: `${Math.random() * 40 + 60}%` }}
                         ></div>
                       ))}
@@ -211,32 +220,32 @@ const Index = () => {
 
         {/* Features */}
         {!summary && !urduTranslation && !isLoading && (
-          <div className="max-w-4xl mx-auto mt-16">
+          <div className="max-w-4xl mx-auto mt-16 animate-fade-in [animation-delay:0.6s]">
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FileText className="w-6 h-6 text-blue-600" />
+              <div className="text-center transition-all duration-300 hover:scale-105 group">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
+                  <FileText className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">AI-Powered Summary</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-semibold mb-2 text-foreground">AI-Powered Summary</h3>
+                <p className="text-muted-foreground">
                   Get concise, intelligent summaries of any blog post using advanced AI
                 </p>
               </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Languages className="w-6 h-6 text-purple-600" />
+              <div className="text-center transition-all duration-300 hover:scale-105 group">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
+                  <Languages className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Urdu Translation</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Urdu Translation</h3>
+                <p className="text-muted-foreground">
                   Automatic translation to Urdu for better accessibility and understanding
                 </p>
               </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Globe className="w-6 h-6 text-green-600" />
+              <div className="text-center transition-all duration-300 hover:scale-105 group">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
+                  <Globe className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Any Blog URL</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Any Blog URL</h3>
+                <p className="text-muted-foreground">
                   Works with any blog or article URL from across the web
                 </p>
               </div>
