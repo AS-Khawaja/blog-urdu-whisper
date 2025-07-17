@@ -1,7 +1,7 @@
 import Blog from "../models/blog.model.js";
 import { supabase } from '../config/supabase.js';
 import * as cheerio from 'cheerio';
-import gt from '@vitalets/google-translate-api';
+import googleTranslate from 'node-google-translate-skidz';
 
 
 
@@ -23,9 +23,26 @@ export const summarise=async(req,res)=>{
 
     const summary_en = text.split(' ').slice(0, 50).join(' ') + '...';
 
-    // LibreTranslate
-    
-    const summary_ur = ' ';
+    // Translate to Urdu using free Google Translate API
+    let summary_ur = '';
+    try {
+      summary_ur = await new Promise((resolve, reject) => {
+        googleTranslate({
+          text: summary_en,
+          source: 'en',
+          target: 'ur'
+        }, function(result) {
+          if (result && result.translation) {
+            resolve(result.translation);
+          } else {
+            reject(new Error('Translation failed'));
+          }
+        });
+      });
+    } catch (translateError) {
+      console.error('Translation error:', translateError);
+      summary_ur = summary_en; // Fallback to English if translation fails
+    }
 
     // Save to Supabase
       const { data, error } = await supabase

@@ -45,26 +45,38 @@ const Index = () => {
 
     setIsLoading(true);
     
-    // Mock API call simulation
+    // Real API call to backend
     try {
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      // Mock summary and translation
-      const mockSummary = `This blog post discusses the latest trends in web development, focusing on modern frameworks and best practices. The author explores how React, TypeScript, and modern CSS techniques are reshaping the development landscape. Key points include the importance of component-based architecture, type safety, and responsive design principles. The post also covers performance optimization strategies and the growing adoption of serverless technologies in modern web applications.`;
-      
-      const mockUrduTranslation = `یہ بلاگ پوسٹ ویب ڈیولپمنٹ کے جدید رجحانات پر بحث کرتی ہے، جس میں جدید فریم ورکس اور بہترین طریقوں پر توجہ دی گئی ہے۔ مصنف اس بات کا جائزہ لیتا ہے کہ کیسے React، TypeScript، اور جدید CSS تکنیکیں ڈیولپمنٹ کے منظرنامے کو تبدیل کر رہی ہیں۔ اہم نکات میں کمپوننٹ پر مبنی آرکیٹیکچر، ٹائپ سیفٹی، اور ریسپانسو ڈیزائن کے اصولوں کی اہمیت شامل ہے۔ یہ پوسٹ کارکردگی کی بہتری کی حکمت عملیوں اور جدید ویب ایپلیکیشنز میں سرورلیس ٹیکنالوجیز کی بڑھتی ہوئی اپنائیت کو بھی شامل کرتی ہے۔`;
-      
-      setSummary(mockSummary);
-      setUrduTranslation(mockUrduTranslation);
-      
-      toast({
-        title: "Success!",
-        description: "Blog summary and translation generated successfully",
+      const response = await fetch('http://localhost:5000/api/summarise', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setSummary(data.summary_en);
+        setUrduTranslation(data.summary_ur);
+        
+        toast({
+          title: "Success!",
+          description: "Blog summary and translation generated successfully",
+        });
+      } else {
+        throw new Error(data.message || 'Failed to process the blog URL');
+      }
     } catch (error) {
+      console.error('API Error:', error);
       toast({
         title: "Error",
-        description: "Failed to process the blog URL. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to process the blog URL. Please try again.",
         variant: "destructive",
       });
     } finally {
